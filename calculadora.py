@@ -3,8 +3,12 @@ import pandas as pd
 import altair as alt
 import numpy as np
 import math
+from PIL import Image
 
 st.set_page_config(layout="wide", page_title="Calculo de TCO",)
+image = Image.open('Logo.png')
+st.image(image, width=350)
+
 st.title('Calculo de TCO')
 st.markdown('AHORRO ECONOMICO ESTIMADO EN LEJANIA DE POZO')
 
