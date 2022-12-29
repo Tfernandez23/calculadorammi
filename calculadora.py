@@ -14,7 +14,7 @@ with col1:
 
 with col2:
     user1 = st.number_input('Distancia pozo')
-    user2 = st.number_input('Freciuencia maniobra mensual')
+    user2 = st.number_input('Frecuencia maniobra mensual')
 
 with col3:
     user3 = st.number_input('Tiempo maniobra')
@@ -45,6 +45,7 @@ if user4 >= 1:
     user4 = math.floor(user4)
 
 def functionsCHA():
+    st.markdown('Calculando que un operador cuesta $4000')
     #Datos Vehiculo
     kmsRecorridos = user1 * 2 * user2
     velocidaProm = 50
