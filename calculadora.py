@@ -10,15 +10,15 @@ st.markdown('AHORRO ECONOMICO ESTIMADO EN LEJANIA DE POZO')
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    useroper = st.number_input('Cantidad de operadores')
-
-with col2:
     user1 = st.number_input('Distancia pozo')
     user2 = st.number_input('Frecuencia maniobra mensual')
 
-with col3:
+with col2:
     user3 = st.number_input('Tiempo maniobra')
-    user4 = st.number_input('Produccion prom pozo')
+    user4 = st.number_input('Producción prom pozo')
+
+with col3:
+    useroper = st.number_input('Cantidad de operadores')
 
 data= pd.DataFrame({
     "Dispositivo":["CHA","mSafe","CHA","mSafe","CHA","mSafe","CHA","mSafe","CHA","mSafe"],
