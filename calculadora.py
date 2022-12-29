@@ -10,12 +10,12 @@ st.markdown('AHORRO ECONOMICO ESTIMADO EN LEJANIA DE POZO')
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    user1 = st.number_input('Distancia pozo')
-    user2 = st.number_input('Frecuencia maniobra mensual')
+    user1 = st.number_input('Distancia pozo (km)')
+    user2 = st.number_input('Frecuencia maniobra mensual (cant)')
 
 with col2:
-    user3 = st.number_input('Tiempo maniobra')
-    user4 = st.number_input('Producción prom pozo')
+    user3 = st.number_input('Tiempo maniobra (mn)')
+    user4 = st.number_input('Producción prom pozo (m³ / día)')
 
 with col3:
     useroper = st.number_input('Cantidad de operadores')
@@ -46,6 +46,9 @@ if user4 >= 1:
 
 def functionsCHA():
     st.markdown('Calculando que un operador cuesta $4000')
+    st.markdown('La cantidad de operadores fjios es de 2')
+    st.markdown('Su vehiculo es Toyota Hilux Pick Up Cabina doble')
+    st.markdown('Su velocidad prom es de 50km')
     #Datos Vehiculo
     kmsRecorridos = user1 * 2 * user2
     velocidaProm = 50
@@ -61,7 +64,7 @@ def functionsCHA():
         CostoRealVehiculo = CostoAsocVehiculo
 
     #Datos Operador
-    Operadores = useroper
+    Operadores = 2
     costoOperador = 4000
     horasUnit = 24*30
     usdHrsOp = costoOperador/horasUnit
@@ -119,13 +122,6 @@ def functionsCHA():
 
     st.write("BENEFICIOS DEL SISTEMA")
     df_5to = pd.DataFrame({
-        "HORAS DE OPERACIÓN AHORRADAS/año": [horasAhorradas],
-        "HORAS DE OPERACIÓN AHORRADAS/año": [horasAhorradas],
-        "HORAS DE OPERACIÓN AHORRADAS/año": [horasAhorradas],
-        "HORAS DE OPERACIÓN AHORRADAS/año": [horasAhorradas],
-        "HORAS DE OPERACIÓN AHORRADAS/año": [horasAhorradas],
-        "HORAS DE OPERACIÓN AHORRADAS/año": [horasAhorradas],
-        "HORAS DE OPERACIÓN AHORRADAS/año": [horasAhorradas],
         "HORAS DE OPERACIÓN AHORRADAS/año": [horasAhorradas],
     })
     st.write(df_5to)
