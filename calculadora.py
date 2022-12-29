@@ -7,7 +7,7 @@ import math
 st.title('Calculadora')
 st.markdown('AHORRO ECONOMICO ESTIMADO EN LEJANIA DE POZO')
 
-col1, col2 = st.columns()
+col1, col2 = st.columns(2)
 
 with col1:
     user1 = st.number_input('Distancia pozo (km)')
