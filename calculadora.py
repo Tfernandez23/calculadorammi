@@ -115,7 +115,7 @@ def functionsCHA():
     st.write(df_4to)
 
 
-    horasAhorradas = ((tiempoMaxInvertidoManiobra*useroper-(tiempoMaxInvertidoManiobra/10)*(useroper)/4)*30)*8.6
+    horasAhorradas = ((tiempoMaxInvertidoManiobra*2-(tiempoMaxInvertidoManiobra/10)*(2)/4)*30)*8.6
 
     st.write("BENEFICIOS DEL SISTEMA")
     df_5to = pd.DataFrame({
