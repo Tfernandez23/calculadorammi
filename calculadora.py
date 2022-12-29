@@ -4,18 +4,19 @@ import altair as alt
 import numpy as np
 import math
 
-st.title('Calculadora')
+st.set_page_config(layout="wide", page_title="Calculo de TCO",)
+st.title('Calculo de TCO')
 st.markdown('AHORRO ECONOMICO ESTIMADO EN LEJANIA DE POZO')
 
 col1, col2 = st.columns(2)
 
 with col1:
-    user1 = st.number_input('Distancia pozo (km)')
-    user2 = st.number_input('Frecuencia maniobra mensual (cant)')
+    user1 = st.number_input('Distancia pozo (km)', min_value=0)
+    user2 = st.number_input('Frecuencia maniobra mensual (cant)', min_value=0)
 
 with col2:
-    user3 = st.number_input('Tiempo maniobra (mn)')
-    user4 = st.number_input('Producción prom pozo (m³ / día)')
+    user3 = st.number_input('Tiempo maniobra (mn)', min_value=0)
+    user4 = st.number_input('Producción prom pozo (m³ / día)', min_value=0)
 
 data= pd.DataFrame({
     "Dispositivo":["CHA","mSafe","CHA","mSafe","CHA","mSafe","CHA","mSafe","CHA","mSafe"],
