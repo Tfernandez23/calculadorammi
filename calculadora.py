@@ -12,6 +12,12 @@ st.image(image, width=350)
 st.title('Calculo de TCO')
 st.markdown('AHORRO ECONOMICO ESTIMADO EN LEJANIA DE POZO')
 
+if "button_clicked" not in st.session_state:
+    st.session_state.button_clicked = False
+
+def callback():
+    st.session_state.button_clicked = True
+
 col1, col2 = st.columns(2)
 
 with col1:
@@ -22,21 +28,6 @@ with col2:
     user3 = st.number_input('Tiempo maniobra (mn)', min_value=0)
     user4 = st.number_input('Producción prom pozo (m³ / día)', min_value=0)
 
-data= pd.DataFrame({
-    "Dispositivo":["CHA","mSafe","CHA","mSafe","CHA","mSafe","CHA","mSafe","CHA","mSafe"],
-    "Precio":[15786,3533,1260,1200,10549,19976,11000,630,2800,1319],
-    "Seccion":["5-Precio Equipo","4-Costo Mano de Obra","3-Costo vehiculo","2-Repuestos/Spare parts","1-Cierre de pozo no deseado","5-Precio Equipo","4-Costo Mano de Obra","3-Costo vehiculo","2-Repuestos/Spare parts","1-Cierre de pozo no deseado"]
-
-})
-
-if st.button('Calcular'):
-    bar_chart = alt.Chart(data).mark_bar().encode(
-    x="Dispositivo:O",
-    y="Precio:Q",
-    color="Seccion"
-    )
-    st.altair_chart(bar_chart, use_container_width=True)
-
 if user1 >= 1:
     user1 = math.floor(user1)
 if user2 >= 1:
@@ -46,87 +37,200 @@ if user3 >= 1:
 if user4 >= 1:
     user4 = math.floor(user4)
 
-def functionsCHA():
+###########################################################################
+if  st.button('Detalles de la operación con CHA', on_click=callback) or st.session_state.button_clicked:
     st.markdown('Calculando que un operador cuesta $4000')
     st.markdown('La cantidad de operadores fjios es de 2')
     st.markdown('Su vehiculo es Toyota Hilux Pick Up Cabina doble')
     st.markdown('Su velocidad prom es de 50km')
-    #Datos Vehiculo
-    kmsRecorridos = user1 * 2 * user2
-    velocidaProm = 50
-    tiempoViaje = kmsRecorridos/velocidaProm
-    rendimientoCombustible = 0.1
-    valorGasoil = 0.7
-    CostoAsocVehiculo = valorGasoil*rendimientoCombustible*kmsRecorridos*30
-    CostoRealVehiculo = 0
+    # Datos Vehiculo
+    kmsRecorridosCHA = user1 * 2 * user2
+    velocidaPromCHA = 50
+    tiempoViajeCHA = kmsRecorridosCHA/velocidaPromCHA
+    rendimientoCombustibleCHA = 0.1
+    valorGasoilCHA = 0.7
+    CostoAsocVehiculoCHA = valorGasoilCHA*rendimientoCombustibleCHA*kmsRecorridosCHA*30
+    CostoRealVehiculoCHA = 0
 
-    if kmsRecorridos > 300:
-        CostoRealVehiculo = 300*rendimientoCombustible*valorGasoil*30
+    if kmsRecorridosCHA > 300:
+        CostoRealVehiculoCHA = 300*rendimientoCombustibleCHA*valorGasoilCHA*30
     else:
-        CostoRealVehiculo = CostoAsocVehiculo
+        CostoRealVehiculoCHA = CostoAsocVehiculoCHA
 
-    #Datos Operador
-    Operadores = 2
-    costoOperador = 4000
-    horasUnit = 24*30
-    usdHrsOp = costoOperador/horasUnit
-    tiempoInvertidoManiobra = tiempoViaje*user2+(user3/60)*user2
-    tiempoMaxInvertidoManiobra = tiempoInvertidoManiobra
-    costoAsocOperadores = tiempoMaxInvertidoManiobra*usdHrsOp*Operadores*30
-    CostoRealMaximo = 0
+    # Datos Operador
+    OperadoresCHA = 2
+    costoOperadorCHA = 4000
+    horasUnitCHA = 24*30
+    usdHrsOpCHA = costoOperadorCHA/horasUnitCHA
+    tiempoInvertidoManiobraCHA = tiempoViajeCHA*user2+(user3/60)*user2
+    tiempoMaxInvertidoManiobraCHA = tiempoInvertidoManiobraCHA
+    costoAsocOperadoresCHA = tiempoMaxInvertidoManiobraCHA*usdHrsOpCHA*OperadoresCHA*30
+    CostoRealMaximoCHA = 0
 
-    if costoAsocOperadores > costoOperador*2+Operadores:
-        CostoRealMaximo = Operadores*costoOperador,
+    if costoAsocOperadoresCHA > costoOperadorCHA*2+OperadoresCHA:
+        CostoRealMaximoCHA = OperadoresCHA*costoOperadorCHA,
     else:
-        CostoRealMaximo = costoAsocOperadores
+        CostoRealMaximoCHA = costoAsocOperadoresCHA
 
-    constoFinal = CostoRealVehiculo + CostoRealMaximo
+    constoFinalCHA = CostoRealVehiculoCHA + CostoRealMaximoCHA
 
     st.write("DATOS DE LA OPERACIÓN")
     df_1ro = pd.DataFrame({
-        "Operador Requeridos": [Operadores, Operadores, Operadores, Operadores, Operadores, Operadores, Operadores, Operadores, Operadores, Operadores, Operadores],
-        "Distancia Pozo [Kms]": [user1, user1, user1, user1, user1, user1, user1, user1, user1, user1, user1],
-        "Tiempo/ maniobra [min]": [user3, user3, user3, user3, user3, user3, user3, user3, user3, user3, user3],
-        "Frecuencia de maniobra Manual/Diaria": [user2, user2, user2, user2, user2, user2, user2, user2, user2, user2, user2],
-        "Produccion Diaria [m3/dia]": [user4, user4, user4, user4, user4, user4, user4, user4, user4, user4, user4]
+            "Operador Requeridos": [OperadoresCHA, OperadoresCHA, OperadoresCHA, OperadoresCHA, OperadoresCHA, OperadoresCHA, OperadoresCHA, OperadoresCHA, OperadoresCHA, OperadoresCHA, OperadoresCHA],
+            "Distancia Pozo [Kms]": [user1, user1, user1, user1, user1, user1, user1, user1, user1, user1, user1],
+            "Tiempo/ maniobra [min]": [user3, user3, user3, user3, user3, user3, user3, user3, user3, user3, user3],
+            "Frecuencia de maniobra Manual/Diaria": [user2, user2, user2, user2, user2, user2, user2, user2, user2, user2, user2],
+            "Produccion Diaria [m3/dia]": [user4, user4, user4, user4, user4, user4, user4, user4, user4, user4, user4]
     })
     st.write(df_1ro)
     st.write("COSTO OPERADOR")
     df_2da = pd.DataFrame({
-        "Costo Operador [USD/MES]": [costoOperador, costoOperador, costoOperador, costoOperador, costoOperador, costoOperador, costoOperador, costoOperador, costoOperador, costoOperador, costoOperador],
-        "Horas unit /mes/op": [horasUnit, horasUnit, horasUnit, horasUnit, horasUnit, horasUnit, horasUnit, horasUnit, horasUnit, horasUnit, horasUnit],
-        "USD/hrs/op": [usdHrsOp, usdHrsOp, usdHrsOp, usdHrsOp, usdHrsOp, usdHrsOp, usdHrsOp, usdHrsOp, usdHrsOp, usdHrsOp, usdHrsOp],
-        "Tiempo invertido en maniobra/dia": [tiempoInvertidoManiobra, tiempoInvertidoManiobra, tiempoInvertidoManiobra, tiempoInvertidoManiobra, tiempoInvertidoManiobra, tiempoInvertidoManiobra, tiempoInvertidoManiobra, tiempoInvertidoManiobra, tiempoInvertidoManiobra, tiempoInvertidoManiobra, tiempoInvertidoManiobra],
-        "TIEMPO MAX. INVERTIDO": [tiempoMaxInvertidoManiobra, tiempoMaxInvertidoManiobra, tiempoMaxInvertidoManiobra, tiempoMaxInvertidoManiobra, tiempoMaxInvertidoManiobra, tiempoMaxInvertidoManiobra, tiempoMaxInvertidoManiobra, tiempoMaxInvertidoManiobra, tiempoMaxInvertidoManiobra, tiempoMaxInvertidoManiobra, tiempoMaxInvertidoManiobra],
-        "COSTO ASOCIADO AL OPERADORES/mes": [costoAsocOperadores, costoAsocOperadores, costoAsocOperadores, costoAsocOperadores, costoAsocOperadores, costoAsocOperadores, costoAsocOperadores, costoAsocOperadores, costoAsocOperadores, costoAsocOperadores, costoAsocOperadores],
-        "COSTO REAL MAXIMO OPERADOR/mes": [CostoRealMaximo, CostoRealMaximo, CostoRealMaximo, CostoRealMaximo, CostoRealMaximo, CostoRealMaximo, CostoRealMaximo, CostoRealMaximo, CostoRealMaximo, CostoRealMaximo, CostoRealMaximo],
+            "Costo Operador [USD/MES]": [costoOperadorCHA, costoOperadorCHA, costoOperadorCHA, costoOperadorCHA, costoOperadorCHA, costoOperadorCHA, costoOperadorCHA, costoOperadorCHA, costoOperadorCHA, costoOperadorCHA, costoOperadorCHA],
+            "Horas unit /mes/op": [horasUnitCHA, horasUnitCHA, horasUnitCHA, horasUnitCHA, horasUnitCHA, horasUnitCHA, horasUnitCHA, horasUnitCHA, horasUnitCHA, horasUnitCHA, horasUnitCHA],
+            "USD/hrs/op": [usdHrsOpCHA, usdHrsOpCHA, usdHrsOpCHA, usdHrsOpCHA, usdHrsOpCHA, usdHrsOpCHA, usdHrsOpCHA, usdHrsOpCHA, usdHrsOpCHA, usdHrsOpCHA, usdHrsOpCHA],
+            "Tiempo invertido en maniobra/dia": [tiempoInvertidoManiobraCHA, tiempoInvertidoManiobraCHA, tiempoInvertidoManiobraCHA, tiempoInvertidoManiobraCHA, tiempoInvertidoManiobraCHA, tiempoInvertidoManiobraCHA, tiempoInvertidoManiobraCHA, tiempoInvertidoManiobraCHA, tiempoInvertidoManiobraCHA, tiempoInvertidoManiobraCHA, tiempoInvertidoManiobraCHA],
+            "TIEMPO MAX. INVERTIDO": [tiempoMaxInvertidoManiobraCHA, tiempoMaxInvertidoManiobraCHA, tiempoMaxInvertidoManiobraCHA, tiempoMaxInvertidoManiobraCHA, tiempoMaxInvertidoManiobraCHA, tiempoMaxInvertidoManiobraCHA, tiempoMaxInvertidoManiobraCHA, tiempoMaxInvertidoManiobraCHA, tiempoMaxInvertidoManiobraCHA, tiempoMaxInvertidoManiobraCHA, tiempoMaxInvertidoManiobraCHA],
+            "COSTO ASOCIADO AL OPERADORES/mes": [costoAsocOperadoresCHA, costoAsocOperadoresCHA, costoAsocOperadoresCHA, costoAsocOperadoresCHA, costoAsocOperadoresCHA, costoAsocOperadoresCHA, costoAsocOperadoresCHA, costoAsocOperadoresCHA, costoAsocOperadoresCHA, costoAsocOperadoresCHA, costoAsocOperadoresCHA],
+            "COSTO REAL MAXIMO OPERADOR/mes": [CostoRealMaximoCHA, CostoRealMaximoCHA, CostoRealMaximoCHA, CostoRealMaximoCHA, CostoRealMaximoCHA, CostoRealMaximoCHA, CostoRealMaximoCHA, CostoRealMaximoCHA, CostoRealMaximoCHA, CostoRealMaximoCHA, CostoRealMaximoCHA],
     })
     st.write(df_2da)
     st.write("COSTO VEHICULO")
     df_3ro = pd.DataFrame({
-        "Kms recorridos/dia": [kmsRecorridos, kmsRecorridos, kmsRecorridos, kmsRecorridos, kmsRecorridos, kmsRecorridos, kmsRecorridos, kmsRecorridos, kmsRecorridos, kmsRecorridos, kmsRecorridos],
-        "Tiempo de Viaje": [tiempoViaje, tiempoViaje, tiempoViaje, tiempoViaje, tiempoViaje, tiempoViaje, tiempoViaje, tiempoViaje, tiempoViaje, tiempoViaje, tiempoViaje],
-        "Velocidad Prom [km/h]": [velocidaProm, velocidaProm, velocidaProm, velocidaProm, velocidaProm, velocidaProm, velocidaProm, velocidaProm, velocidaProm, velocidaProm, velocidaProm],
-        "Rendimiento combustible vehiculo [L/km]": [rendimientoCombustible, rendimientoCombustible, rendimientoCombustible, rendimientoCombustible, rendimientoCombustible, rendimientoCombustible, rendimientoCombustible, rendimientoCombustible, rendimientoCombustible, rendimientoCombustible, rendimientoCombustible],
-        "Valor Gasoil [USD/L]": [valorGasoil, valorGasoil, valorGasoil, valorGasoil, valorGasoil, valorGasoil, valorGasoil, valorGasoil, valorGasoil, valorGasoil, valorGasoil],
-        "COSTO ASOCIADO AL VEHICULO": [CostoAsocVehiculo, CostoAsocVehiculo, CostoAsocVehiculo, CostoAsocVehiculo, CostoAsocVehiculo, CostoAsocVehiculo, CostoAsocVehiculo, CostoAsocVehiculo, CostoAsocVehiculo, CostoAsocVehiculo, CostoAsocVehiculo],
-        "COSTO REAL MAXIMO VEHICULO/mes": [CostoRealVehiculo, CostoRealVehiculo, CostoRealVehiculo, CostoRealVehiculo, CostoRealVehiculo, CostoRealVehiculo, CostoRealVehiculo, CostoRealVehiculo, CostoRealVehiculo, CostoRealVehiculo, CostoRealVehiculo],
+            "Kms recorridos/dia": [kmsRecorridosCHA, kmsRecorridosCHA, kmsRecorridosCHA, kmsRecorridosCHA, kmsRecorridosCHA, kmsRecorridosCHA, kmsRecorridosCHA, kmsRecorridosCHA, kmsRecorridosCHA, kmsRecorridosCHA, kmsRecorridosCHA],
+            "Tiempo de Viaje": [tiempoViajeCHA, tiempoViajeCHA, tiempoViajeCHA, tiempoViajeCHA, tiempoViajeCHA, tiempoViajeCHA, tiempoViajeCHA, tiempoViajeCHA, tiempoViajeCHA, tiempoViajeCHA, tiempoViajeCHA],
+            "Velocidad Prom [km/h]": [velocidaPromCHA, velocidaPromCHA, velocidaPromCHA, velocidaPromCHA, velocidaPromCHA, velocidaPromCHA, velocidaPromCHA, velocidaPromCHA, velocidaPromCHA, velocidaPromCHA, velocidaPromCHA],
+            "Rendimiento combustible vehiculo [L/km]": [rendimientoCombustibleCHA, rendimientoCombustibleCHA, rendimientoCombustibleCHA, rendimientoCombustibleCHA, rendimientoCombustibleCHA, rendimientoCombustibleCHA, rendimientoCombustibleCHA, rendimientoCombustibleCHA, rendimientoCombustibleCHA, rendimientoCombustibleCHA, rendimientoCombustibleCHA],
+            "Valor Gasoil [USD/L]": [valorGasoilCHA, valorGasoilCHA, valorGasoilCHA, valorGasoilCHA, valorGasoilCHA, valorGasoilCHA, valorGasoilCHA, valorGasoilCHA, valorGasoilCHA, valorGasoilCHA, valorGasoilCHA],
+            "COSTO ASOCIADO AL VEHICULO": [CostoAsocVehiculoCHA, CostoAsocVehiculoCHA, CostoAsocVehiculoCHA, CostoAsocVehiculoCHA, CostoAsocVehiculoCHA, CostoAsocVehiculoCHA, CostoAsocVehiculoCHA, CostoAsocVehiculoCHA, CostoAsocVehiculoCHA, CostoAsocVehiculoCHA, CostoAsocVehiculoCHA],
+            "COSTO REAL MAXIMO VEHICULO/mes": [CostoRealVehiculoCHA, CostoRealVehiculoCHA, CostoRealVehiculoCHA, CostoRealVehiculoCHA, CostoRealVehiculoCHA, CostoRealVehiculoCHA, CostoRealVehiculoCHA, CostoRealVehiculoCHA, CostoRealVehiculoCHA, CostoRealVehiculoCHA, CostoRealVehiculoCHA],
     })
     st.write(df_3ro)
     st.write("COSTO MES")
     df_4to = pd.DataFrame({
-        "OPEX/mes STD": [constoFinal, constoFinal, constoFinal, constoFinal, constoFinal, constoFinal, constoFinal, constoFinal, constoFinal, constoFinal, constoFinal],
+            "OPEX/mes STD": [constoFinalCHA, constoFinalCHA, constoFinalCHA, constoFinalCHA, constoFinalCHA, constoFinalCHA, constoFinalCHA, constoFinalCHA, constoFinalCHA, constoFinalCHA, constoFinalCHA],
     })
     st.write(df_4to)
 
+    ###########################################################################
 
-    horasAhorradas = ((tiempoMaxInvertidoManiobra*2-(tiempoMaxInvertidoManiobra/10)*(2)/4)*30)*8.6
+    st.markdown('Detalles de la operación con mSafe')
+    col3, col4 = st.columns(2)
 
-    st.write("BENEFICIOS DEL SISTEMA")
-    df_5to = pd.DataFrame({
-        "HORAS DE OPERACIÓN AHORRADAS/año": [horasAhorradas],
-    })
-    st.write(df_5to)
+    with col3:
+        user5 = st.number_input('Nueva Distancia pozo (km)', min_value=0)
+        user6 = st.number_input('Nueva Frecuencia maniobra mensual (cant)')
 
-if st.button('Detalles de la operación'):
-    st.write(functionsCHA())
+    with col4:
+        user7 = st.number_input('Nuevo tiempo maniobra (mn)', min_value=0)
+        user8 = st.number_input('Nueva producción prom pozo (m³ / día)', min_value=0)
+
+        if user5 >= 1:
+            user5 = math.floor(user5)
+        if user6 >= 1:
+            user6 = math.floor(user6)
+        if user7 >= 1:
+            user7 = math.floor(user7)
+        if user8 >= 1:
+            user8 = math.floor(user8)
+
+    if  st.button('Detalles de la operación con mSafe', on_click=callback):
+        st.markdown('Calculando que un operador cuesta $4000')
+        st.markdown('La cantidad de operadores fjios es de 1')
+        st.markdown('Su vehiculo es Toyota Hilux Pick Up Cabina doble')
+        st.markdown('Su velocidad prom es de 50km')
+        # Datos Vehiculo
+        kmsRecorridosMSAFE = user5 * 2 * user6
+        velocidaPromMSAFE = 50
+        tiempoViajeMSAFE = kmsRecorridosMSAFE/velocidaPromMSAFE
+        rendimientoCombustibleMSAFE = 0.1
+        valorGasoilMSAFE = 0.7
+        CostoAsocVehiculoMSAFE = valorGasoilMSAFE*rendimientoCombustibleMSAFE*kmsRecorridosMSAFE*30
+        CostoRealVehiculoMSAFE = 0
+
+        if kmsRecorridosMSAFE > 300:
+            CostoRealVehiculoMSAFE = 300*rendimientoCombustibleMSAFE*valorGasoilMSAFE*30
+        else:
+            CostoRealVehiculoMSAFE = CostoAsocVehiculoMSAFE
+
+        # Datos Operador
+        OperadoresMSAFE = 1
+        costoOperadorMSAFE = 4000
+        horasUnitMSAFE = 24*30
+        usdHrsOpMSAFE = costoOperadorMSAFE/horasUnitMSAFE
+        tiempoInvertidoManiobraMSAFE = tiempoViajeMSAFE*user6+(user7/60)*user6
+        tiempoMaxInvertidoManiobraMSAFE = 0
+        if tiempoInvertidoManiobraMSAFE > 24:
+            tiempoMaxInvertidoManiobraMSAFE = 24
+        else:
+            tiempoMaxInvertidoManiobraMSAFE =+ tiempoInvertidoManiobraMSAFE
+        costoAsocOperadoresMSAFE =+ tiempoMaxInvertidoManiobraMSAFE*usdHrsOpMSAFE*OperadoresMSAFE*30
+        CostoRealMaximoMSAFE = 0
+        if costoAsocOperadoresMSAFE > costoOperadorMSAFE*2+OperadoresMSAFE:
+            CostoRealMaximoMSAFE = OperadoresMSAFE*costoOperadorMSAFE,
+        else:
+            CostoRealMaximoMSAFE = costoAsocOperadoresMSAFE
+        constoFinalMSAFE = CostoRealVehiculoMSAFE + CostoRealMaximoMSAFE
+
+        st.write("DATOS DE LA OPERACIÓN")
+        df_1ro = pd.DataFrame({
+                    "Operador Requeridos": [OperadoresMSAFE, OperadoresMSAFE, OperadoresMSAFE, OperadoresMSAFE, OperadoresMSAFE, OperadoresMSAFE, OperadoresMSAFE, OperadoresMSAFE, OperadoresMSAFE, OperadoresMSAFE, OperadoresMSAFE],
+                    "Distancia Pozo [Kms]": [user5, user5, user5, user5, user5, user5, user5, user5, user5, user5, user5],
+                    "Tiempo/ maniobra [min]": [user7, user7, user7, user7, user7, user7, user7, user7, user7, user7, user7],
+                    "Frecuencia de maniobra Manual/Diaria": [user6, user6, user6, user6, user6, user6, user6, user6, user6, user6, user6],
+                    "Produccion Diaria [m3/dia]": [user8, user8, user8, user8, user8, user8, user8, user8, user8, user8, user8]
+        })
+        st.write(df_1ro)
+        st.write("COSTO OPERADOR")
+        df_2da = pd.DataFrame({
+                    "Costo Operador [USD/MES]": [costoOperadorMSAFE, costoOperadorMSAFE, costoOperadorMSAFE, costoOperadorMSAFE, costoOperadorMSAFE, costoOperadorMSAFE, costoOperadorMSAFE, costoOperadorMSAFE, costoOperadorMSAFE, costoOperadorMSAFE, costoOperadorMSAFE],
+                    "Horas unit /mes/op": [horasUnitMSAFE, horasUnitMSAFE, horasUnitMSAFE, horasUnitMSAFE, horasUnitMSAFE, horasUnitMSAFE, horasUnitMSAFE, horasUnitMSAFE, horasUnitMSAFE, horasUnitMSAFE, horasUnitMSAFE],
+                    "USD/hrs/op": [usdHrsOpMSAFE, usdHrsOpMSAFE, usdHrsOpMSAFE, usdHrsOpMSAFE, usdHrsOpMSAFE, usdHrsOpMSAFE, usdHrsOpMSAFE, usdHrsOpMSAFE, usdHrsOpMSAFE, usdHrsOpMSAFE, usdHrsOpMSAFE],
+                    "Tiempo invertido en maniobra/dia": [tiempoInvertidoManiobraMSAFE, tiempoInvertidoManiobraMSAFE, tiempoInvertidoManiobraMSAFE, tiempoInvertidoManiobraMSAFE, tiempoInvertidoManiobraMSAFE, tiempoInvertidoManiobraMSAFE, tiempoInvertidoManiobraMSAFE, tiempoInvertidoManiobraMSAFE, tiempoInvertidoManiobraMSAFE, tiempoInvertidoManiobraMSAFE, tiempoInvertidoManiobraMSAFE],
+                    "TIEMPO MAX. INVERTIDO": [tiempoMaxInvertidoManiobraMSAFE, tiempoMaxInvertidoManiobraMSAFE, tiempoMaxInvertidoManiobraMSAFE, tiempoMaxInvertidoManiobraMSAFE, tiempoMaxInvertidoManiobraMSAFE, tiempoMaxInvertidoManiobraMSAFE, tiempoMaxInvertidoManiobraMSAFE, tiempoMaxInvertidoManiobraMSAFE, tiempoMaxInvertidoManiobraMSAFE, tiempoMaxInvertidoManiobraMSAFE, tiempoMaxInvertidoManiobraMSAFE],
+                    "COSTO ASOCIADO AL OPERADORES/mes": [costoAsocOperadoresMSAFE, costoAsocOperadoresMSAFE, costoAsocOperadoresMSAFE, costoAsocOperadoresMSAFE, costoAsocOperadoresMSAFE, costoAsocOperadoresMSAFE, costoAsocOperadoresMSAFE, costoAsocOperadoresMSAFE, costoAsocOperadoresMSAFE, costoAsocOperadoresMSAFE, costoAsocOperadoresMSAFE],
+                    "COSTO REAL MAXIMO OPERADOR/mes": [CostoRealMaximoMSAFE, CostoRealMaximoMSAFE, CostoRealMaximoMSAFE, CostoRealMaximoMSAFE, CostoRealMaximoMSAFE, CostoRealMaximoMSAFE, CostoRealMaximoMSAFE, CostoRealMaximoMSAFE, CostoRealMaximoMSAFE, CostoRealMaximoMSAFE, CostoRealMaximoMSAFE],
+        })
+        st.write(df_2da)
+        st.write("COSTO VEHICULO")
+        df_3ro = pd.DataFrame({
+                    "Kms recorridos/dia": [kmsRecorridosMSAFE, kmsRecorridosMSAFE, kmsRecorridosMSAFE, kmsRecorridosMSAFE, kmsRecorridosMSAFE, kmsRecorridosMSAFE, kmsRecorridosMSAFE, kmsRecorridosMSAFE, kmsRecorridosMSAFE, kmsRecorridosMSAFE, kmsRecorridosMSAFE],
+                    "Tiempo de Viaje": [tiempoViajeMSAFE, tiempoViajeMSAFE, tiempoViajeMSAFE, tiempoViajeMSAFE, tiempoViajeMSAFE, tiempoViajeMSAFE, tiempoViajeMSAFE, tiempoViajeMSAFE, tiempoViajeMSAFE, tiempoViajeMSAFE, tiempoViajeMSAFE],
+                    "Velocidad Prom [km/h]": [velocidaPromMSAFE, velocidaPromMSAFE, velocidaPromMSAFE, velocidaPromMSAFE, velocidaPromMSAFE, velocidaPromMSAFE, velocidaPromMSAFE, velocidaPromMSAFE, velocidaPromMSAFE, velocidaPromMSAFE, velocidaPromMSAFE],
+                    "Rendimiento combustible vehiculo [L/km]": [rendimientoCombustibleMSAFE, rendimientoCombustibleMSAFE, rendimientoCombustibleMSAFE, rendimientoCombustibleMSAFE, rendimientoCombustibleMSAFE, rendimientoCombustibleMSAFE, rendimientoCombustibleMSAFE, rendimientoCombustibleMSAFE, rendimientoCombustibleMSAFE, rendimientoCombustibleMSAFE, rendimientoCombustibleMSAFE],
+                    "Valor Gasoil [USD/L]": [valorGasoilMSAFE, valorGasoilMSAFE, valorGasoilMSAFE, valorGasoilMSAFE, valorGasoilMSAFE, valorGasoilMSAFE, valorGasoilMSAFE, valorGasoilMSAFE, valorGasoilMSAFE, valorGasoilMSAFE, valorGasoilMSAFE],
+                    "COSTO ASOCIADO AL VEHICULO": [CostoAsocVehiculoMSAFE, CostoAsocVehiculoMSAFE, CostoAsocVehiculoMSAFE, CostoAsocVehiculoMSAFE, CostoAsocVehiculoMSAFE, CostoAsocVehiculoMSAFE, CostoAsocVehiculoMSAFE, CostoAsocVehiculoMSAFE, CostoAsocVehiculoMSAFE, CostoAsocVehiculoMSAFE, CostoAsocVehiculoMSAFE],
+                    "COSTO REAL MAXIMO VEHICULO/mes": [CostoRealVehiculoMSAFE, CostoRealVehiculoMSAFE, CostoRealVehiculoMSAFE, CostoRealVehiculoMSAFE, CostoRealVehiculoMSAFE, CostoRealVehiculoMSAFE, CostoRealVehiculoMSAFE, CostoRealVehiculoMSAFE, CostoRealVehiculoMSAFE, CostoRealVehiculoMSAFE, CostoRealVehiculoMSAFE],
+        })
+        st.write(df_3ro)
+        st.write("COSTO MES")
+        df_4to = pd.DataFrame({
+                    "OPEX/mes STD": [constoFinalMSAFE, constoFinalMSAFE, constoFinalMSAFE, constoFinalMSAFE, constoFinalMSAFE, constoFinalMSAFE, constoFinalMSAFE, constoFinalMSAFE, constoFinalMSAFE, constoFinalMSAFE, constoFinalMSAFE],
+        })
+        st.write(df_4to)
+
+        if st.button('Calcular', on_click=callback) or st.session_state.button_clicked:
+            costoManoObraResumenCHA = CostoRealMaximoCHA*12+3000+3000
+            vehiculoResumenCHA = CostoRealVehiculoCHA*12
+            pozoNoDeseadoResumenCHA = (user4/23.7*2.5*3)/3*4
+
+            costoManoObraResumenMSAFE = CostoRealMaximoMSAFE*12+3000
+            vehiculoResumenMSAFE = CostoRealVehiculoMSAFE*12
+            pozoNoDeseadoResumenMSAFE = (user8/23.7*2.5*3)/3*0.5
+
+            costoMsafe = 19976 + 1200 + costoManoObraResumenMSAFE + vehiculoResumenMSAFE + pozoNoDeseadoResumenMSAFE
+            costoCHA = 15786 + 2800 + costoManoObraResumenCHA + vehiculoResumenCHA + pozoNoDeseadoResumenCHA
+
+            ahorroMsafe = costoCHA - costoMsafe
+            ahorroCHA = 0
+
+            data = pd.DataFrame({
+                                        "Dispositivo": ["CHA", "CHA", "CHA", "CHA", "CHA", "CHA", "mSafe", "mSafe","mSafe","mSafe","mSafe","mSafe"],
+                                        "Precio": [ahorroCHA, 15798, costoManoObraResumenCHA, vehiculoResumenCHA, 2800, pozoNoDeseadoResumenCHA, ahorroMsafe, 19976, costoManoObraResumenMSAFE, vehiculoResumenMSAFE,1200,pozoNoDeseadoResumenMSAFE],
+                                        "Seccion": ["6-Ahorro","5-Precio Equipo", "4-Costo Mano de Obra", "3-Costo vehiculo", "2-Repuestos/Spare parts", "1-Cierre de pozo no deseado","6-Ahorro", "5-Precio Equipo", "4-Costo Mano de Obra", "3-Costo vehiculo","2-Repuestos/Spare parts","1-Cierre de pozo no deseado"]
+            })
+            bar_chart = alt.Chart(data).mark_bar().encode(
+                            x="Dispositivo:O",
+                            y="Precio:Q",
+                            color="Seccion"
+            )
+            st.altair_chart(bar_chart, use_container_width=True)
