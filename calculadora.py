@@ -53,7 +53,7 @@ with st.container():
 
     with col2:
         user5 = 25
-        user6 = 1
+        user6 = 2
         user7 = 0.50
         user8 = 25000
 
