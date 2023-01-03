@@ -53,8 +53,8 @@ with st.container():
 
     with col2:
         user5 = 25
-        user6 = 2
-        user7 = 0.50
+        user6 = 0.50
+        user7 = 2
         user8 = 25000
 
         #Caculos CHA
